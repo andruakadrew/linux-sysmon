@@ -35,11 +35,11 @@ sysmon/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── sysmon.py        # main entry point and loop
-├── collector.py     # reads system metrics from /proc and psutil
-├── display.py       # formats and renders the terminal dashboard
-├── alerting.py      # stateless alert checks with sustained CPU tracking
-└── logs/            # auto-created at runtime — alert logs written here
+├── sysmon.py        
+├── collector.py     
+├── display.py       
+├── alerting.py      
+└── logs/            
 ```
 
 ---
