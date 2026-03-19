@@ -1,7 +1,2 @@
-- Linux operating system only — this tool reads directly from /proc and is not compatible with Windows or macOS
-- Python 3.10 or higher (developed on Python 3.14 in PyCharm)
-- pip packages listed below
-
-
 psutil>=5.9.0
 colorama>=0.4.6
