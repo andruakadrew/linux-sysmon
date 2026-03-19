@@ -54,15 +54,64 @@ sysmon/
 
 ## Installation
 
-1. Clone the repository:
+### Prerequisites
+- Linux based operating system
+- Python 3.10 or higher
+- Git installed on your system
+
+---
+
+### Step 1 — Clone the repository
 ```bash
-   git clone https://github.com/andruakadrew/linux_sysmon.git
-   cd sysmon
+git clone https://github.com/andruakadrew/linux-sysmon.git
+cd linux_sysmon
 ```
 
-2. Install dependencies:
+---
+
+### Step 2 — Create a virtual environment
 ```bash
-   pip install -r requirements.txt
+python3 -m venv venv
+```
+
+---
+
+### Step 3 — Activate the virtual environment
+```bash
+source venv/bin/activate
+```
+
+---
+
+### Step 4 — Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### Step 5 — Run the program
+```bash
+python sysmon.py
+```
+
+---
+
+### Step 6 — Stop the program
+Press `Ctrl+C` to stop the dashboard at any time.
+
+---
+
+### Checking alert logs
+Alert logs are written automatically to the `logs/` folder when any threshold is breached. To view them:
+```bash
+cat logs/sysmon_alerts.log
+```
+
+To search for a specific alert type:
+```bash
+grep "CRITICAL" logs/sysmon_alerts.log
+grep "WARNING" logs/sysmon_alerts.log
 ```
 
 ---
