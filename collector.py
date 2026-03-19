@@ -18,34 +18,28 @@ def get_uptime():
 
 
 def get_cpu_usage():
-    """
-    Return the current overall system CPU utilization as a percentage (float).
-    Uses psutil.cpu_percent() with a short interval for a meaningful value.
-    """
-    # interval=1 gives a reasonably accurate measurement over 1 second
-    # interval=0 returns the value since last call (good for repeated polling)
-    # For first call or one-shot use, interval > 0 is better
+    
+   # Return the current overall system CPU utilization as a percentage (float).
+    
     return psutil.cpu_percent(interval=1.0, percpu=False)
 
 
 def get_memory_usage():
-    """
-    Return a dictionary with total memory, used memory, and percentage used.
-    All memory values are in bytes (as returned by psutil).
-    """
+    
+   # Return a dictionary with total memory, used memory, and percentage used.
+    
     mem = psutil.virtual_memory()
     return {
-        'total_bytes': mem.total,  # in bytes
-        'used_bytes': mem.used,  # in bytes (actual in-use RAM)
-        'percent': mem.percent  # already calculated percentage
+        'total_bytes': mem.total,  
+        'used_bytes': mem.used,  
+        'percent': mem.percent  
     }
 
 
 def get_storage():
-    """
-    Return disk usage stats for the root filesystem ('/').
-    Returns free space in GB and percentage used.
-    """
+    
+   # Return disk usage stats for the root filesystem ('/').
+  
     disk = psutil.disk_usage('/')
     return {
         'total_bytes': disk.total,
@@ -55,19 +49,14 @@ def get_storage():
 
 
 def get_top_processes(n=3):
-    """
-    Return a list of the top n processes sorted by current CPU usage (descending).
-    Each process is represented as a dict with: pid, name, cpu_percent.
-
-    Note: cpu_percent values may be 0.0 on the very first call unless an interval is used.
-    """
+    
+   # Return a list of the top n processes sorted by current CPU usage (descending).
+    
     processes = []
 
-    # We iterate over all processes and collect the attributes we need
-    # Collect + measure in one go (slower but very simple)
     for proc in psutil.process_iter(['pid', 'name']):
             try:
-                cpu = proc.cpu_percent(interval=0.1)  # small per-process interval
+                cpu = proc.cpu_percent(interval=0.1) 
                 processes.append({
                     'pid': proc.pid,
                     'name': proc.name() or '<unknown>',
