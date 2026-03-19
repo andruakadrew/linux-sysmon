@@ -12,6 +12,15 @@ try:
 except ImportError:
     COLOR = False
 
+    class Dummy:
+        RED = ""
+        GREEN = ""
+        YELLOW = ""
+        WHITE = ""
+        RESET_ALL = ""
+    Fore = dummy()
+    Style = dummy()
+
 def clear_screen():
     sys.stdout.write('\033[2J\033[H')
     sys.stdout.flush()
@@ -63,7 +72,7 @@ def print_dashboard(data: dict):
     mem_color = Fore.RED if mem_pct > 90 else Fore.YELLOW if mem_pct > 75 else Fore.GREEN
 
     disk = data.get('storage', {})
-    disk_free = disk.get('free_bytes', 0)
+    disk_free_gb = disk.get('free_bytes', 0) / (1024 ** 3)
     disk_used_pct = disk.get('percent_used', 0)
     disk_color = Fore.RED if disk_used_pct > 90 else Fore.YELLOW if disk_used_pct > 80 else Fore.GREEN
 
