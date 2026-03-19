@@ -21,7 +21,7 @@ def get_cpu_usage():
     
    # Return the current overall system CPU utilization as a percentage (float).
     
-    return psutil.cpu_percent(interval=1.0, percpu=False)
+    return psutil.cpu_percent(interval=None, percpu=False)
 
 
 def get_memory_usage():
@@ -56,7 +56,7 @@ def get_top_processes(n=3):
 
     for proc in psutil.process_iter(['pid', 'name']):
             try:
-                cpu = proc.cpu_percent(interval=0.1) 
+                cpu = proc.cpu_percent(interval=None)
                 processes.append({
                     'pid': proc.pid,
                     'name': proc.name() or '<unknown>',

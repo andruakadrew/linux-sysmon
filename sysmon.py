@@ -1,6 +1,7 @@
 import time
 import os
 import sys
+import psutil
 from pathlib import Path
 from datetime import datetime
 
@@ -38,7 +39,14 @@ def main():
     # Initialization
     setup_logs()
     print("Starting SYSMON... (Ctrl+C to stop)")
-    time.sleep(1)  
+    # Prime psutil cpu measurements so first reading is accurate
+    psutil.cpu_percent(interval=None)
+    for proc in psutil.process_iter():
+        try:
+            proc.cpu_percent(interval=None)
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+    time.sleep(1)  # single one second wait, only happens once
 
     try:
         while True:
