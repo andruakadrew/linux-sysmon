@@ -56,7 +56,7 @@ sysmon/
 
 1. Clone the repository:
 ```bash
-   git clone https://github.com/yourusername/sysmon.git
+   git clone https://github.com/andruakadrew/linux_sysmon.git
    cd sysmon
 ```
 
