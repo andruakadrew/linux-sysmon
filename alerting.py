@@ -1,8 +1,7 @@
 # alerting.py
 """
 Stateless alerting logic for the Linux monitoring project.
-All functions are pure: they take data and thresholds → return alert info.
-No side effects, no state (except where explicitly passed for sustained checks).
+All functions take data and thresholds → return alert info.
 """
 
 import time
@@ -15,10 +14,6 @@ def check_high_cpu_usage(
     threshold: float = 90.0,
     sustain_seconds: float = 3.0
 ) -> Tuple[str, str]:
-    """
-    Returns (level, message) or ("", "") if no alert.
-    Uses state['cpu_high_since'] to track duration of high usage.
-    """
     cpu = data.get('cpu_usage', 0.0)
 
     now = time.time()
@@ -40,9 +35,6 @@ def check_high_memory_usage(
     warning_threshold: float = 85.0,
     critical_threshold: float = 95.0
 ) -> Tuple[str, str]:
-    """
-    Returns (level, message) or ("", "") if no alert.
-    """
     mem = data.get('memory_usage', {}) or data.get('memory', {})
     percent = mem.get('percent', 0.0)
 
@@ -59,9 +51,6 @@ def check_low_disk_space(
     warning_free_gb: float = 10.0,
     critical_free_gb: float = 5.0
 ) -> Tuple[str, str]:
-    """
-    Returns (level, message) or ("", "") if no alert.
-    """
     disk = data.get('storage', {})
     free_bytes = disk.get('free_bytes', 0)
     free_gb = free_bytes / (1024 ** 3)
@@ -77,12 +66,8 @@ def check_low_disk_space(
 def check_uptime(
     data: Dict[str, Any],
     max_days_warning: int = 1,
-    max_days_critical: int = 30      # optional – can be adjusted or removed
+    max_days_critical: int = 30      
 ) -> Tuple[str, str]:
-    """
-    Alert if system uptime exceeds 1 day (as per spec).
-    Returns (level, message) or ("", "") if no alert.
-    """
     uptime_seconds = data.get('uptime_seconds', 0.0)
     uptime_days = uptime_seconds / 86400.0
 
@@ -98,9 +83,6 @@ def get_top_process_alerts(
     data: Dict[str, Any],
     cpu_single_process_critical: float = 90.0
 ) -> List[str]:
-    """
-    Returns list of warning strings for suspicious individual processes.
-    """
     alerts = []
     for proc in data.get('top_processes', [])[:3]:
         cpu = proc.get('cpu_percent', 0.0)
@@ -115,19 +97,14 @@ def collect_all_alerts(
     data: Dict[str, Any],
     state: Dict[str, Any] | None = None,
 ) -> List[Tuple[str, str]]:
-    """
-    Main entry point for collecting all current alerts.
-    state is required for sustained checks (e.g. CPU), optional otherwise.
-    """
     if state is None:
         state = {}
 
     alerts: List[Tuple[str, str]] = []
 
-    # Sustained checks (need state)
+    # Sustained checks
     sustained_checks = [
         check_high_cpu_usage,
-        # add more sustained checks here later if needed
     ]
     for check_func in sustained_checks:
         level, msg = check_func(data, state)
@@ -138,14 +115,14 @@ def collect_all_alerts(
     instant_checks = [
         check_high_memory_usage,
         check_low_disk_space,
-        check_uptime,           # ← newly added
+        check_uptime,           
     ]
     for check_func in instant_checks:
         level, msg = check_func(data)
         if level:
             alerts.append((level, msg))
 
-    # Per-process alerts (optional, can be noisy)
+    # Per-process alerts
     for msg in get_top_process_alerts(data):
         alerts.append(("warning", msg))
 
