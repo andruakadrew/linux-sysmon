@@ -17,10 +17,6 @@ def clear_screen():
     sys.stdout.flush()
 
 def seconds_to_human_uptime(seconds: float) -> str:
-    """
-    Convert raw seconds (from /proc/uptime) into compact human-readable format
-    like: 2d 4h13m or 17h45m or 2m8s
-    """
     if seconds < 0:
         return "???"
 
@@ -36,38 +32,25 @@ def seconds_to_human_uptime(seconds: float) -> str:
         parts.append(f"{hours}h")
     if minutes > 0 or hours > 0 or days > 0:
         parts.append(f"{minutes}m")
-    if not parts:  # less than 1 minute
+    if not parts:  
         parts.append(f"{seconds}s")
 
     return " ".join(parts)
 
 
 def print_dashboard(data: dict):
-    """
-    Expects a dict with the same structure as returned by collector.collect_all()
-    Example keys:
-      - uptime_seconds
-      - cpu_percent
-      - memory: {'total_gb', 'used_gb', 'percent'}
-      - storage: {'free_gb', 'percent'}
-      - top_processes: list of {'pid', 'name', 'cpu_percent'}
-    """
 
     clear_screen()
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # ────────────────────────────────────────────────
     # Header
-    # ────────────────────────────────────────────────
     print("═" * 42)
     print(f"{' SYSMON - Linux Monitor ':^42}")
     print("═" * 42)
     print(f"  {now}")
     print()
 
-    # ────────────────────────────────────────────────
     # Basic system info
-    # ────────────────────────────────────────────────
     uptime_str = seconds_to_human_uptime(data.get('uptime_seconds', 0))
 
     cpu = data.get('cpu_usage', 0.0)
@@ -108,7 +91,7 @@ def print_dashboard(data: dict):
         print(f"{'PID':>6}  {'NAME':<24}  {'CPU%':>6}")
         print("─" * 42)
 
-        for proc in top_procs[:8]:  # show up to 8, but usually 3–5 is enough
+        for proc in top_procs[:8]:  
             cpu = proc.get('cpu_percent', 0.0)
             original_name = proc.get('name', '???')
             if len(original_name) > 23:
@@ -120,11 +103,8 @@ def print_dashboard(data: dict):
     print("═" * 42)
 
 
-# ────────────────────────────────────────────────
-# Example usage / standalone test
-# ────────────────────────────────────────────────
+# Standalone test
 if __name__ == "__main__":
-    # Fake data for testing the layout
     test_data = {
         'uptime_seconds': 2 * 86400 + 4 * 3600 + 13 * 60 + 42,
         'cpu_usage': 42.3,
